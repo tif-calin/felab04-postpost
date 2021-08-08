@@ -2,12 +2,12 @@
 - [x] POST, GET, PUT, DELETE
 - [x] JSON input for POST/PUT
 - [ ] testing
-- [ ] *basic auth option: username/password
-- [ ] *bearer auth option
-- [ ] *prefill form from history
+- [x] *basic auth option: username/password
+- [x] *bearer auth option
+- [x] *prefill form from history
 
-- [ ] make mobile friendly
-- [ ] show history 
+- [x] make mobile friendly
+- [x] show history 
 - [ ] query form
 
 ## useful links
