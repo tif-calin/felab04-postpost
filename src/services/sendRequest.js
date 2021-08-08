@@ -1,18 +1,21 @@
 /* eslint-disable no-console */
 
-const queries2string = queries => encodeURIComponent(
-  Object.entries(queries).reduce((acc, [key, val]) => (
+const params2string = params => encodeURIComponent(
+  Object.entries(params).reduce((acc, [key, val]) => (
     `${acc}${((acc === '?') ? '' : '&')}${key}=${val}`
   ), '?')
 );
 
 const sendRequest = async (
   url, 
-  queries = {},
+  params = null,
   data = {} // should contain method, body, and headers
 ) => (
-  await fetch(url + queries2string(queries), data)
-    .then(resp => resp)
+  await fetch(url + (params ? params2string(params) : ''), data)
+    .then(resp => {
+      console.log(resp);
+      return resp;
+    })
     .catch(err => console.log(err))
 );
 

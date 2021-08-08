@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
+import { Buffer } from 'buffer';
 import Payload from '../components/form/Payload';
 import ParamsConfig from '../components/form/ParamsConfig';
 import sendRequest from '../services/sendRequest.js';
+import { addToHistory, getHistory } from '../services/localStorage.js';
 import './Form.scss';
 
 const fakeData = {
@@ -24,24 +26,41 @@ export default function Form() {
   const [url, setUrl] = React.useState('');
   const [params, setParams] = React.useState({});
   const [request, setRequest] = React.useState({});
+  const [auth, setAuth] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [authBearerToken, setAuthBearerToken] = React.useState('');
   const [payload, setPayload] = React.useState();
-  const [loading, setLoading] = React.useState(true);
+
   const [validJSON, setValidJSON] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
+  const [history, setHistory] = React.useState(getHistory());
 
   useEffect(() => {
-    setUrl(fakeData.url);
-    setParams({});
-    setRequest(fakeData.request);
+    const previous = [...history].pop() || fakeData;
+
+    setUrl(previous.url);
+    setParams(previous.params);
+    setRequest(previous.request);
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    if (!auth) {
+      setUsername('');
+      setPassword('');
+    }
+  }, [auth]);
+
   const handleBodyChange = e => {
     let json;
+
     try { json = JSON.parse(e.target.value); }
     catch { 
       setValidJSON(false); 
       return;
     }
+
     setValidJSON(true);
 
     setRequest({ ...request, body: json });
@@ -50,15 +69,34 @@ export default function Form() {
   const handleRequest = async e => {
     e.preventDefault();
 
+    // set the body if relevant method
     if (['GET', 'DELETE'].includes(request.method)) {
+      // eslint-disable-next-line no-unused-vars
       const { body: _, ...rest } = request;
       setRequest(rest);
     }
 
-    sendRequest(url, params, request)
-      .then(resp => resp.json())
-      .then(json => setPayload(json))
-    ;
+    // check for auth
+    if (auth === 'basic') {
+      const authHeader = 
+        `${Buffer.from(username, 'base64')}:${Buffer.from(password, 'base64')}`
+      ;
+      const { headers } = request;
+      headers['Authorization'] = `Basic ${authHeader}`;
+      setRequest({ ...request, headers });
+    } else if (auth === 'bearer') {
+      const { headers } = request;
+      headers['Authorization'] = `Bearer ${authBearerToken}`;
+      setRequest({ ...request, headers });
+    }
+
+    // make the request, add to history if successful
+    const resp = await sendRequest(url, params, request);
+    if (resp.ok) {
+      setPayload(await resp.json());
+      addToHistory(url, params, request);
+      setHistory(getHistory());
+    }
   };
 
   return <div className="Form">
@@ -67,15 +105,13 @@ export default function Form() {
     {!loading && <form onSubmit={handleRequest}>
       <fieldset name="url" onChange={e => setUrl(e.target.value)}>
         <legend>url</legend>
-        <div>
-          <input 
-            defaultValue={url}
-            name="url"
-            type="url" 
-            placeholder="https://www.onezoom.org/popularity/list"
-          />
-          <button type="submit">send</button>
-        </div>
+        <input 
+          defaultValue={url}
+          name="url"
+          type="url" 
+          placeholder="https://www.example.com/api/v1/fruit"
+        />
+        <button type="submit">send</button>
       </fieldset>
 
       <fieldset name="params">
@@ -119,6 +155,42 @@ export default function Form() {
         </label>
       </fieldset>
 
+      <fieldset name="auth">
+        <legend>auth</legend>
+        <select 
+          name="auth" 
+          onChange={e => setAuth(e.target.value)}
+          defaultValue={auth}
+        >
+          <option value="">none</option>
+          <option value="basic">basic</option>
+          <option hidden value="digest">digest</option>
+          <option value="bearer">bearer</option>
+        </select>
+        {auth && <div>{auth === 'basic'
+          ? <>
+            <input 
+              type="text" 
+              name="username" 
+              placeholder="username"
+              onChange={e => setUsername(e.target.value)}
+            />
+            <input 
+              type="text" 
+              name="password" 
+              placeholder="password"
+              onChange={e => setPassword(e.target.value)}
+            />
+          </>
+          : <input 
+            type="text" 
+            name="token" 
+            placeholder="token"
+            onChange={e => setAuthBearerToken(e.target.value)}
+          />
+        }</div>}
+      </fieldset>
+
       <fieldset 
         onChange={handleBodyChange}
         style={{ 
@@ -134,5 +206,11 @@ export default function Form() {
     </form>}
 
     <Payload payload={payload}/>
+
+    {Boolean(history.length) && <><h3>history</h3>
+      <div>
+        {history.map(call => <p key={call.timestamp}>{call.url}</p>)}
+      </div>
+    </>}
   </div>;
 }
