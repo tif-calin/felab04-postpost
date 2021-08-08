@@ -197,8 +197,14 @@ export default function Form() {
         }}
       >
         <legend>request body</legend>
-        <textarea name="body" placeholder="body" 
-          defaultValue={JSON.stringify(request.body, null, 2)}
+        <textarea 
+          name="body" 
+          placeholder="body" 
+          defaultValue={JSON.stringify(
+            request.body && JSON.parse(request.body), 
+            null, 
+            2
+          )}
           style={{ backgroundColor: validJSON ? '#5f51' : '#d555' }}
         />
       </fieldset>
