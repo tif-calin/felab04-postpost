@@ -1,7 +1,7 @@
 # lab4 - postpost
 - [x] POST, GET, PUT, DELETE
 - [x] JSON input for POST/PUT
-- [ ] testing
+- [x] testing
 - [x] *basic auth option: username/password
 - [x] *bearer auth option
 - [x] *prefill form from history
