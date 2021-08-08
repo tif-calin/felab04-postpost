@@ -1,4 +1,4 @@
-#root {
+#root > * {
   max-width: 576px;
 }
 
@@ -28,23 +28,32 @@ input[type="radio"] {
 form > fieldset {
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  gap: 0.5rem;
 
   &[name="url"] {
-    flex-direction: column;
+    justify-content: space-between;
+    flex-wrap: nowrap;
 
     input {
       width: 100%;
     }
-
-    > div {
-      display: flex;
-      justify-content: space-between;
-    }
   }
 
-  &[name="params"]{
+  &[name="params"] {
     display: none;
+  }
+
+  &[name="auth"] {
+    align-items: flex-start;
+
+    div { 
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      border: 1px solid #ccc;
+      padding: 0.5rem;
+      gap: 0.5rem;
+    }
   }
 
   &[name="method"] {
@@ -84,4 +93,19 @@ table {
   }
 }
 
+}
+
+@media screen and (max-width: 500px) {
+  .Form {
+    form > fieldset[name="method"] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form > fieldset[name="auth"] {
+      flex-direction: column;
+
+      &> div { width: auto }
+    }
+  }
 }
