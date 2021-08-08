@@ -1,5 +1,5 @@
 import React from 'react';
-import propTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 const Payload = props => {
   return <div className="Payload">
@@ -13,7 +13,10 @@ const Payload = props => {
 };
 
 Payload.propTypes = {
-  payload: propTypes.object
+  payload: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.array,
+  ]).isRequired
 };
 
 export default Payload;
