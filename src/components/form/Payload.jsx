@@ -16,7 +16,7 @@ Payload.propTypes = {
   payload: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.array,
-  ]).isRequired
+  ])
 };
 
 export default Payload;
