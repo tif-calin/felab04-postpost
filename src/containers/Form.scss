@@ -1,0 +1,87 @@
+#root {
+  max-width: 576px;
+}
+
+.Form {
+
+input[type="radio"] {
+  cursor: pointer;
+  display: none;
+
+  & + span {
+    border: 1px solid #ccc0;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 0.1rem 0.25rem;
+  }
+
+  &:checked + span {
+    border: 1px solid #eee;
+    background-color: #ddd;
+  }
+}
+
+&> *:last-child {
+  margin-top: 2rem;
+}
+
+form > fieldset {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  &[name="url"] {
+    flex-direction: column;
+
+    input {
+      width: 100%;
+    }
+
+    > div {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+
+  &[name="queries"]{
+    display: none;
+  }
+
+  &[name="method"] {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &:last-of-type textarea {
+    width: 100%;
+    height: 5rem;
+  }
+}
+
+table {
+  width: 100%;
+  text-align: center;
+
+  tr {
+    display: flex;
+    justify-content: space-between;
+
+    th {
+      font-weight: normal;
+    }
+
+    td, th {
+      width: 100%;
+    }
+
+    td button {
+      width: 100%;
+    }
+
+    td:last-child span {
+      display: flex;
+    }
+  }
+}
+
+}
