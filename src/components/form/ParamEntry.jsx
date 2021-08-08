@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import propTypes from 'prop-types';
 
-const QueryEntry = props => {
+const ParamsEntry = props => {
 
-  // on save, trigger setQueries, lock
+  // on save, trigger setparams, lock
   // on edit, unlock
   // on remove, remove row and trigger function to re-read query form
 
@@ -14,24 +14,24 @@ const QueryEntry = props => {
   const handleEdit = () => setLocked(false);
 
   const handleDelete = e => {
-    const newQueries = { ...props.queries };
-    delete newQueries[e.target.dataset['queryKey']];
-    props.updateQueries(newQueries);
+    const newParams = { ...props.params };
+    delete newParams[e.target.dataset['queryKey']];
+    props.updateParams(newParams);
   };
 
   const handleSave = e => {
-    if (key && value && !Object.keys(props.queries).includes(key)) {
-      const newQueries = { ...props.queries };
-      delete newQueries[e.target.dataset['queryKey']];
-      newQueries[key] = value;
+    if (key && value && !Object.keys(props.params).includes(key)) {
+      const newParams = { ...props.params };
+      delete newParams[e.target.dataset['queryKey']];
+      newParams[key] = value;
       setLocked(true);
       setKey(props.entry.key);
       setValue(props.entry.value);
-      props.updateQueries(newQueries);
+      props.updateParams(newParams);
     }
   };
 
-  return <tr className="QueryEntry">
+  return <tr className="ParamsEntry">
     <td>
       <input 
         className="query-key"
@@ -71,11 +71,11 @@ const QueryEntry = props => {
 
 };
 
-QueryEntry.propTypes = {
+ParamsEntry.propTypes = {
   entry: propTypes.object,
   locked: propTypes.bool,
-  queries: propTypes.object.isRequired,
-  updateQueries: propTypes.func.isRequired
+  params: propTypes.object.isRequired,
+  updateParams: propTypes.func.isRequired
 };
 
-export default QueryEntry;
+export default ParamsEntry;

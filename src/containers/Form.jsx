@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import Payload from '../components/form/Payload';
-import QueryConfig from '../components/form/QueryConfig';
+import ParamsConfig from '../components/form/ParamsConfig';
 import sendRequest from '../services/sendRequest.js';
 import './Form.scss';
 
 const fakeData = {
   url: 'https://www.onezoom.org/popularity/list',
-  queries: {
+  params: {
     key: 0,
     otts: 563159,
     expand_taxa: true,
@@ -22,7 +22,7 @@ const fakeData = {
 
 export default function Form() {
   const [url, setUrl] = React.useState('');
-  const [queries, setQueries] = React.useState({});
+  const [params, setParams] = React.useState({});
   const [request, setRequest] = React.useState({});
   const [payload, setPayload] = React.useState();
   const [loading, setLoading] = React.useState(true);
@@ -30,7 +30,7 @@ export default function Form() {
 
   useEffect(() => {
     setUrl(fakeData.url);
-    setQueries({});
+    setParams({});
     setRequest(fakeData.request);
     setLoading(false);
   }, []);
@@ -55,7 +55,7 @@ export default function Form() {
       setRequest(rest);
     }
 
-    sendRequest(url, queries, request)
+    sendRequest(url, params, request)
       .then(resp => resp.json())
       .then(json => setPayload(json))
     ;
@@ -78,9 +78,9 @@ export default function Form() {
         </div>
       </fieldset>
 
-      <fieldset name="queries">
-        <legend>queries</legend>
-        <QueryConfig queries={queries} setQueries={setQueries}/>
+      <fieldset name="params">
+        <legend>params</legend>
+        <ParamsConfig params={params} setParams={setParams}/>
       </fieldset>
 
       <fieldset name="method" onChange={
