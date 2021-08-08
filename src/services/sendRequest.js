@@ -8,10 +8,13 @@ const params2string = params => encodeURIComponent(
 
 const sendRequest = async (
   url, 
-  params = null,
+  params = {},
   data = {} // should contain method, body, and headers
 ) => (
-  await fetch(url + (params ? params2string(params) : ''), data)
+  await fetch(
+    url + (Object.keys(params).length ? params2string(params) : ''), 
+    data
+  )
     .then(resp => {
       console.log(resp);
       return resp;

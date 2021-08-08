@@ -8,7 +8,7 @@ import './Form.scss';
 
 const fakeData = {
   url: 'https://www.onezoom.org/popularity/list',
-  params: {
+  /*params: {
     key: 0,
     otts: 563159,
     expand_taxa: true,
@@ -16,7 +16,8 @@ const fakeData = {
     names: true,
     include_raw: true,
     sort: 'standard'
-  },
+  },*/
+  params: {},
   request: {
     method: 'GET'
   }
@@ -53,9 +54,7 @@ export default function Form() {
   }, [auth]);
 
   const handleBodyChange = e => {
-    let json;
-
-    try { json = JSON.parse(e.target.value); }
+    try { JSON.parse(e.target.value); }
     catch { 
       setValidJSON(false); 
       return;
@@ -63,7 +62,7 @@ export default function Form() {
 
     setValidJSON(true);
 
-    setRequest({ ...request, body: json });
+    setRequest({ ...request, body: e.target.value });
   };
 
   const handleRequest = async e => {
